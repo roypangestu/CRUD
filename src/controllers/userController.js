@@ -3,11 +3,10 @@ const user_models = require("../models/userModels");
 //GET USER
 const get_allUser = async (req, res) => {
   try {
-    await user_models.get_allUser().then((rows) => {
-      res.json({
-        message: "get users success",
-        data: rows,
-      });
+    const data = await user_models.get_allUser();
+    res.status(200).json({
+      message: "Get data success",
+      data,
     });
   } catch (error) {
     res.status(500).json({
@@ -19,20 +18,17 @@ const get_allUser = async (req, res) => {
 
 //POST USER
 const post_user = async (req, res) => {
-  const { body } = req;
   try {
-    await user_models.post_user(body).then((rows) => {
-      res.json({
-        message: "POST user succes",
-        isSucces: rows.affectedRows,
-        insertID: rows.insertId,
-        data: body,
-      });
+    const success = await user_models.post_user(req.body);
+    res.json({
+      message: "POST user succes",
+      isSucces: success.affectedRows,
+      insertId: success.insertId,
     });
   } catch (error) {
-    res.status(500).json({
+    res.status(400).json({
       message: "error",
-      errorMsg: error,
+      error_msg: error.message,
     });
   }
 };
@@ -42,13 +38,12 @@ const update_user = async (req, res) => {
   const { id_user } = req.params;
   const { body } = req;
   try {
-    await user_models.update_user(body, id_user).then((rows) => {
-      res.json({
-        message: "update user seccessfuly",
-        isSucces: rows.affectedRows,
-        dataId: id_user,
-        data: body,
-      });
+    const success = await user_models.update_user(body, id_user);
+    res.json({
+      message: "update user seccessfuly",
+      isSucces: success.affectedRows,
+      dataId: id_user,
+      data: body,
     });
   } catch (error) {
     res.status(500).json({
@@ -62,12 +57,11 @@ const update_user = async (req, res) => {
 const delete_user = async (req, res) => {
   const { id_user } = req.params;
   try {
-    await user_models.delete_user(id_user).then((rows) => {
-      res.json({
-        message: "DELETE user successfuly",
-        isSucces: rows.affectedRows,
-        dataId: id_user,
-      });
+    const success = await user_models.delete_user(id_user);
+    res.json({
+      message: "DELETE user successfuly",
+      isSucces: success.affectedRows,
+      dataId: id_user,
     });
   } catch (error) {
     res.status(500).json({
